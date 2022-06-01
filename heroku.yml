@@ -1,5 +1,0 @@
-build:
-  docker:
-    web: Dockerfile
-  config:
-    REACT_APP_API_URL: "https://daftacademy-todo-backend.herokuapp.com/"
