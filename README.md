@@ -46,7 +46,7 @@ git push heroku main
 3. Dodaj konfigurację, która umozliwi deploy aplikacji na heroku. W tym celu skorzystamy z gotowej akcji z marketplace: https://github.com/marketplace/actions/deploy-to-heroku
 
 ```yaml
-name: Deploy
+name: Test CI/CD
 
 on:
   push:
@@ -67,6 +67,73 @@ jobs:
 ```
 4. Wprowadź zmiany w projekcie, dzięki którym poznasz wersje aplikacji, zacommituj je, a następnie wypchnij commity do repozytorium githuba. 
 
+5. Skonfiguruj workflow w ten sposób, zeby pipeline uruchamiał się tylko, jeśli tag zaczynający się na literę "v" zostanie dodany do repozytorium.
 
+Zmień fragment:
+```yaml
+on:
+  push:
+    branches:
+      - main
+
+```
+na:
+
+```yaml
+on:
+  push:
+    tags:        
+      - v**
+```
+
+6. Dodaj kolejny job, dzięki któremy zbudujemy obraz i dodamy go do repozytrium githuba.
+
+Dodaj dodatkowe zmienne środowiskowe:
+
+```yaml
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+```
+
+Dodaj job:
+
+```yaml
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+```
+
+Dodatkowo zmieńmy konfiguracje joba do deployu, dzięki której job wykona się tylko jeśli build-and-push-image wykona się poprawnie.
+Wystarczy dodać ponizszy klucz:
+```yaml
+  needs: [build-and-push-image]
+```
 > **UWAGA:**
 > Jeśli, któryś z etapów nie jest dla ciebie jasny rzuć okiem na [dokumentacje](https://docs.github.com/en/actions).
