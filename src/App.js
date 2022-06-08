@@ -7,22 +7,22 @@ import { Actions } from "./Actions";
 function App() {
   const data = Actions();
   return (
-      <Provider value={data}>
-        <div className="App">
-          <h1>TODOS v1.1</h1>
-          <div className="wrapper">
-            <section className="create-section">
-              <CreateTaskForm />
-            </section>
-            <section className="list-section">
-              <UserList />
-            </section>
-            <section className="delete-section">
-              <DeleteAllTasks />
-            </section>
-          </div>
+    <Provider value={data}>
+      <div className="App">
+        <h1>TODOS v1.2</h1>
+        <div className="wrapper">
+          <section className="create-section">
+            <CreateTaskForm />
+          </section>
+          <section className="list-section">
+            <UserList />
+          </section>
+          <section className="delete-section">
+            <DeleteAllTasks />
+          </section>
         </div>
-      </Provider>
+      </div>
+    </Provider>
   );
 }
 
