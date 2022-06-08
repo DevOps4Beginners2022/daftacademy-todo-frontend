@@ -2,8 +2,8 @@ name: Test CI/CD
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - v**
 
 jobs:
   deploy-to-heroku:
