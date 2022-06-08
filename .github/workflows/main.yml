@@ -13,10 +13,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - touch text.txt
-      - echo "Hello form GH Actions" > text.txt
-      - cat text.txt
-      - ls -la 
+      - name: Create text.txt file
+        run: touch text.txt
+      - run: echo "Hello form GH Actions" > text.txt
+      - run: text.txt
+      - run: ls -la
   build-and-push-image:
     runs-on: ubuntu-latest
     permissions:
