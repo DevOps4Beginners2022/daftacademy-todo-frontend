@@ -9,7 +9,7 @@ function App() {
   return (
       <Provider value={data}>
         <div className="App">
-          <h1>TODOS v1.0</h1>
+          <h1>TODOS v1.1</h1>
           <div className="wrapper">
             <section className="create-section">
               <CreateTaskForm />
